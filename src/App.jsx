@@ -30,9 +30,22 @@ class App extends Component {
     const newMessage = {id: newId, username: username, content: message};
     const messages = this.state.messages.concat(newMessage);
     this.setState({messages: messages})
-  };
+  }
+
   componentDidMount() {
+
     console.log("componentDidMount <App />");
+
+    const webSock = new WebSocket('ws://0.0.0.0:3001');
+
+    webSock.onopen = function (event) {
+      console.log("working?");
+      webSock.send('hello'); 
+    };
+
+    // webSock.send("Connected to Server")
+
+    //test incoming message
     setTimeout(() => {
       console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
@@ -42,6 +55,7 @@ class App extends Component {
       // Calling setState will trigger a call to render() in App and all child components.
       this.setState({messages: messages})
     }, 3000);
+
   }
 
   render() {
