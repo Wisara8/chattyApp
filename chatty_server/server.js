@@ -3,7 +3,7 @@
 const express = require('express');
 const SocketServer = require('ws');
 const uuidv1 = require('uuid/v1');
-// uuidv1(); // ⇨ '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e'
+// uuidv1();  ⇨ '45745c60-7b1a-11e8-9c9c-2d42b21b1a3e'
 
 // Set the port to 3001
 const PORT = 3001;
@@ -22,14 +22,15 @@ const wss = new SocketServer.Server({ server });
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
+  let counter = wss.clients.size;
+  // console.log(counter);
+  ws.send(counter);
   ws.on('message', function incoming(event) {
-    //console.log('here');
-
     for (let client of wss.clients) {
       if (client.readyState === SocketServer.OPEN) {
         let msg = JSON.parse(event);
         if (msg.type === "postUser") {
-          console.log("user");
+          // console.log("user");
           let userNote = msg.oldUser + " has changed names to " + msg.newUser;
           msg.note = userNote;
           newUserMsg = JSON.stringify(msg);
@@ -37,26 +38,12 @@ wss.on('connection', (ws) => {
         } else {
         msg.id = uuidv1();
         let newMsg = JSON.stringify(msg);
-        //console.log(newMsg);
         client.send(newMsg);
         }
       }
 
     }
 
-    // wss.clients.forEach(function each(client) {
-    //   if (/*client !== ws && */client.readyState === SocketServer.OPEN) {
-    //     let msg = JSON.parse(event);
-    //     msg.id = uuidv1();
-    //     let newMsg = JSON.stringify(msg);
-    
-    //     //console.log(newMsg);
-    //     // client.send(newMsg);
-    //     console.log('sending...');
-    //   }
-    // });
-
-    // console.log(msg.username, ' says ', msg.content);
   });  
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => console.log('Client disconnected'));

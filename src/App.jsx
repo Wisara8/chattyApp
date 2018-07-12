@@ -9,8 +9,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = ({currentUser: {name: 'Anonymous'},
-                   messages: []
-                  //  notifications: []
+                   messages: [],
+                   count: 0
                   });
                   this.onPost = this.onPost.bind(this);
                   this.onUser = this.onUser.bind(this);
@@ -20,10 +20,7 @@ class App extends Component {
   onPost (username, message) {
     const newId = this.state.messages.length + 1;
     const newMessage = {id: newId, username: username, content: message, type: "onPost"};
-    //const messages = this.state.messages.concat(newMessage);
-    // this.setState({messages: messages})
     this.webSock.send(JSON.stringify(newMessage));
-    this.webSock.addEventListener("message",this.handleBroadCast);
   }
   onUser (username, oldUser) {
     const changeUser = {newUser: username, oldUser: oldUser, type: "postUser"};
@@ -31,27 +28,28 @@ class App extends Component {
   }
 
   handleBroadCast(evt) {
-    //console.log('in client now:');
-    // console.log(JSON.parse(evt.data));
     const msg = JSON.parse(evt.data);
     if (msg.type === "postUser"){
       const newNotifications = {note: msg.note, type: msg.type};
       const newNote = this.state.messages.concat(newNotifications);
       this.setState({messages: newNote, currentUser: {name: msg.username}});
-    } else {
+    } else if (msg.type === "onPost"){
     const newMsg = {id: msg.id, username: msg.username, content: msg.content, type: msg.type};
     const messages = this.state.messages.concat(newMsg);
     this.setState({messages: messages, currentUser: {name: msg.username}});
+    } else {
+      // console.log(msg);
+      this.setState({count: msg});
+
     }
   }
 
   componentDidMount() {
 
     console.log("componentDidMount <App />");
+    this.webSock.addEventListener("message",this.handleBroadCast);
 
     this.webSock.onopen = function (event) {
-      // console.log("working?");
-      // webSock.send('hello'); 
     };
   
     // webSock.send("Connected to Server")
@@ -72,8 +70,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Navbar />
-        <MessageList /*notifications={this.state.notifications}*/ content={this.state.messages} />
+        <Navbar counter={this.state.count}/>
+        <MessageList content={this.state.messages} />
         <ChatBar onUser={this.onUser} onPost={this.onPost} currentUser={this.state.currentUser.name} />
       </div>
     );
