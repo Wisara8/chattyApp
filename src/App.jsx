@@ -9,29 +9,29 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = ({currentUser: {name: 'Anonymous'},
-                   messages: [
-                    {
-                      id: 1,
-                      username: "Bob",
-                      content: "Has anyone seen my marbles?",
-                    },
-                    {
-                      id: 2,
-                      username: "Anonymous",
-                      content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-                    }
-                  ],
-                  }
-                  );
+                   messages: []
+                  });
                   this.onPost = this.onPost.bind(this);
+                  this.handleBroadCast = this.handleBroadCast.bind(this);
                   this.webSock = new WebSocket('ws://0.0.0.0:3001');
   }
   onPost (username, message) {
     const newId = this.state.messages.length + 1;
     const newMessage = {id: newId, username: username, content: message};
-    const messages = this.state.messages.concat(newMessage);
-    this.setState({messages: messages})
+    //const messages = this.state.messages.concat(newMessage);
+    // this.setState({messages: messages})
     this.webSock.send(JSON.stringify(newMessage));
+    this.webSock.addEventListener("message",this.handleBroadCast);
+  }
+
+  handleBroadCast(evt) {
+    //console.log('in client now:');
+    // console.log(JSON.parse(evt.data));
+    const msg = JSON.parse(evt.data);
+    const newMsg = {id: msg.id, username: msg.username, content: msg.content};
+    const messages = this.state.messages.concat(newMsg);
+    this.setState({messages: messages});
+
   }
 
   componentDidMount() {
@@ -39,7 +39,7 @@ class App extends Component {
     console.log("componentDidMount <App />");
 
     this.webSock.onopen = function (event) {
-      console.log("working?");
+      // console.log("working?");
       // webSock.send('hello'); 
     };
   
