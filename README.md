@@ -21,7 +21,9 @@ This project is meant to help bootcamp students practice their React front-end a
 
 ## Final Product
 
-!["Chatty SPA"]()
+!["Chatty SPA"](https://github.com/Wisara8/chattyApp/blob/master/docs/ChattyAppWithText.png?raw=true)
+!["Chatty Close Up"](https://github.com/Wisara8/chattyApp/blob/master/docs/Chatty%20Close%20Up.png?raw=true)
+
 
 ## Getting Started
 
