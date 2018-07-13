@@ -14,8 +14,9 @@ class App extends Component {
                   this.onPost = this.onPost.bind(this);
                   this.onUser = this.onUser.bind(this);
                   this.handleBroadCast = this.handleBroadCast.bind(this);
-                  this.webSock = new WebSocket('ws://0.0.0.0:3001');
+                  this.webSock = new WebSocket('ws://' + window.location.hostname + ':3001');
   }
+
   onPost (username, message) {
     const newId = this.state.messages.length + 1;
     const newMessage = {id: newId, username: username, content: message, type: "onPost"};
