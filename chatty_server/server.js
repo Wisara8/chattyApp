@@ -24,7 +24,9 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
   //count and send # of users currently connected
   let counter = wss.clients.size;
-  ws.send(counter);
+  wss.clients.forEach(function each(client) {
+      client.send(counter);
+  });
   ws.on('message', function incoming(event) {
     for (let client of wss.clients) {
       if (client.readyState === SocketServer.OPEN) {
