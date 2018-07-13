@@ -5,7 +5,6 @@ import MessageList from './MessageList.jsx';
 
 
 class App extends Component {
-
   constructor(props) {
     super(props);
     this.state = ({currentUser: {name: 'Anonymous'},
@@ -34,25 +33,20 @@ class App extends Component {
       const newNote = this.state.messages.concat(newNotifications);
       this.setState({messages: newNote, currentUser: {name: msg.username}});
     } else if (msg.type === "onPost"){
+      //handle post
     const newMsg = {id: msg.id, username: msg.username, content: msg.content, type: msg.type};
     const messages = this.state.messages.concat(newMsg);
     this.setState({messages: messages, currentUser: {name: msg.username}});
     } else {
-      // console.log(msg);
+      // update user count
       this.setState({count: msg});
-
     }
   }
 
   componentDidMount() {
 
-    console.log("componentDidMount <App />");
     this.webSock.addEventListener("message",this.handleBroadCast);
-
-    this.webSock.onopen = function (event) {
-    };
-  
-    // webSock.send("Connected to Server")
+    this.webSock.onopen = function (event) {};
 
     // //test incoming message
     // setTimeout(() => {

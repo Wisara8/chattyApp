@@ -11,7 +11,7 @@ export default class ChatBar extends Component {
     this.onUsernameEnter = this.onUsernameEnter.bind(this);
     this.onUsernameChange = this.onUsernameChange.bind(this);
   }
-
+    //begin message post
     onKeyPress(event) {
       if (event.key === 'Enter') {
         const currentUser = this.state.user;
@@ -20,23 +20,22 @@ export default class ChatBar extends Component {
         event.target.value = '';
       }
     }
-
+    //begin username update
     onUsernameEnter(event) {
       if (event.key === 'Enter') {
-        console.log("hit Enter");
         const oldUser = this.props.currentUser;
         const currentUser = this.state.user;
         this.props.onUser(currentUser, oldUser);
         this.setState({user: event.target.value});
       }
     }
+    //Allow username field to be editable
     onUsernameChange(event) {
       this.setState({user: event.target.value});
     }
   
   
   render(){
-    // const {currentUser} = this.props;
     return (
       <footer className="chatbar">
         <input className="chatbar-username" value={this.state.user} onChange={this.onUsernameChange} onKeyPress={this.onUsernameEnter}  />

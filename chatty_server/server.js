@@ -22,19 +22,20 @@ const wss = new SocketServer.Server({ server });
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
+  //count and send # of users currently connected
   let counter = wss.clients.size;
-  // console.log(counter);
   ws.send(counter);
   ws.on('message', function incoming(event) {
     for (let client of wss.clients) {
       if (client.readyState === SocketServer.OPEN) {
         let msg = JSON.parse(event);
+        //if client has changed name
         if (msg.type === "postUser") {
-          // console.log("user");
           let userNote = msg.oldUser + " has changed names to " + msg.newUser;
           msg.note = userNote;
           newUserMsg = JSON.stringify(msg);
           client.send(newUserMsg);
+          //if there is a new post
         } else {
         msg.id = uuidv1();
         let newMsg = JSON.stringify(msg);
